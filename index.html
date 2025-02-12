@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IGV Browser</title>
+    <script src="https://cdn.jsdelivr.net/npm/igv@3.0.9/dist/igv.min.js"></script>
+</head>
+<body>
+    <p>
+        Below is a comparison of alignments from different technologies. These alignments are from HG001 (NA12878) in the Platinum Pedigree 
+        (<a href="https://github.com/Platinum-Pedigree-Consortium/Platinum-Pedigree-Datasets" target="_blank">GitHub</a> | 
+        <a href="https://www.biorxiv.org/content/10.1101/2024.10.02.616333v1" target="_blank">Preprint</a>). 
+        The alignment by default loads a view of "STRC", but feel free to search for and explore other genes!
+    </p>
+    <p>
+        Note that PacBio HiFi is fully phased and shown twice (once for the sequence data and once for methylation). To see a good example of haplotype phased methylation, look up "chr11:2,697,000-2,705,000" to zoom into a specific region of the KCNQ1 gene.
+    </p>
+    
+    <div id="igv-container" style="width: 100%; height: 600px;"></div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const options = {
+                genome: "hg38",
+                locus: "chr15:43597561-43620800",
+                tracks: [
+                    {
+                        name: "Illumina 2x150",
+                        url: "https://platinum-pedigree-data.s3.amazonaws.com/data/illumina/mapped/GRCh38/2188.v4.2.4.grc38.bam",
+                        indexURL: "https://platinum-pedigree-data.s3.amazonaws.com/data/illumina/mapped/GRCh38/2188.v4.2.4.grc38.bam.bai",
+                        type: "alignment",
+                        format: "bam",
+                        displayMode: "SQUISHED",
+                        groupBy: "phase",
+                        height: 200
+                    },
+                    {
+                        name: "Element 2x150",
+                        url: "https://platinum-pedigree-data.s3.amazonaws.com/data/element/mapped/GRCh38/2188-E.GRCh38.merged.sort.bam",
+                        indexURL: "https://platinum-pedigree-data.s3.amazonaws.com/data/element/mapped/GRCh38/2188-E.GRCh38.merged.sort.bam.bai",
+                        type: "alignment",
+                        format: "bam",
+                        displayMode: "SQUISHED",
+                        groupBy: "phase",
+                        height: 350 
+                    },
+                    //{
+                    //    name: "PacBio Onso 2x150",
+                    //    url: "https://downloads.pacbcloud.com/public/onso/2024Q1/WGS/NIST_HG_Trio/hg002/bams/HG002_Onso_trimmed.bam",
+                    //    indexURL: "https://downloads.pacbcloud.com/public/onso/2024Q1/WGS/NIST_HG_Trio/hg002/bams/HG002_Onso_trimmed.bam.bai",
+                    //    type: "alignment",
+                    //    format: "bam",
+                    //    displayMode: "SQUISHED",
+                    //    groupBy: "phase"
+                    //},
+                    {
+                        name: "PacBio HiFi (phased)",
+                        url: "https://platinum-pedigree-data.s3.amazonaws.com/data/hifi/mapped/GRCh38/NA12878.GRCh38.haplotagged.bam",
+                        indexURL: "https://platinum-pedigree-data.s3.amazonaws.com/data/hifi/mapped/GRCh38/NA12878.GRCh38.haplotagged.bam.bai",
+                        type: "alignment",
+                        format: "bam",
+                        displayMode: "SQUISHED",
+                        groupBy: "phase",
+                        hideSmallIndels: true,
+                        smallIndelThreshold: 2,
+                        height: 500
+                    },
+                    {
+                        name: "PacBio HiFi (phased - methylation view)",
+                        url: "https://platinum-pedigree-data.s3.amazonaws.com/data/hifi/mapped/GRCh38/NA12878.GRCh38.haplotagged.bam",
+                        indexURL: "https://platinum-pedigree-data.s3.amazonaws.com/data/hifi/mapped/GRCh38/NA12878.GRCh38.haplotagged.bam.bai",
+                        type: "alignment",
+                        format: "bam",
+                        displayMode: "SQUISHED",
+                        groupBy: "phase",
+                        colorBy: "basemod2",
+                        showMismatches: false,
+                        hideSmallIndels: true,
+                        smallIndelThreshold: 2,
+                        height: 500
+                    },
+                    {
+                        name: "ONT",
+                        url: "https://platinum-pedigree-data.s3.amazonaws.com/data/ont/mapped/GRCh38/NA12878.minimap2.bam",
+                        indexURL: "https://platinum-pedigree-data.s3.amazonaws.com/data/ont/mapped/GRCh38/NA12878.minimap2.bam.bai",
+                        type: "alignment",
+                        format: "bam",
+                        displayMode: "SQUISHED",
+                        groupBy: "phase",
+                        hideSmallIndels: true,
+                        smallIndelThreshold: 2,
+                        height: 500
+                    }
+                ]
+            };
+
+            igv.createBrowser(document.getElementById("igv-container"), options)
+                .then(function (browser) {
+                    console.log("IGV browser created");
+                });
+        });
+    </script>
+</body>
+</html>
